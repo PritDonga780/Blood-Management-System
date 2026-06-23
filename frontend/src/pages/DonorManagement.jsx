@@ -1,87 +1,51 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Layout from "../components/Layout";
 import { toast } from "react-toastify";
+import API from "../api/axios";
 
 function DonorManagement() {
+  const [donors, setDonors] = useState([]);
+  const [search, setSearch] = useState("");
+  const [editId, setEditId] = useState(null);
 
-  const [donors, setDonors] =
-    useState([]);
-
-  const [search, setSearch] =
-    useState("");
-
-  const [editId, setEditId] =
-    useState(null);
-
-  const [formData, setFormData] =
-    useState({
-      name: "",
-      bloodGroup: "",
-      phone: "",
-      email: "",
-    });
+  const [formData, setFormData] = useState({
+    name: "",
+    bloodGroup: "",
+    phone: "",
+    email: "",
+  });
 
   useEffect(() => {
     fetchDonors();
   }, []);
 
-  const fetchDonors =
-    async () => {
-
+  const fetchDonors = async () => {
     try {
-
-      const res =
-        await API.get("/donors");
+      const res = await API.get("/donors");
       setDonors(res.data);
-
     } catch (error) {
-
       console.error(error);
-
+      toast.error("Failed to fetch donors");
     }
   };
 
-  const handleChange =
-    (e) => {
-
+  const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]:
-        e.target.value,
+      [e.target.name]: e.target.value,
     });
-
   };
 
-  const handleSubmit =
-    async (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-
       if (editId) {
-
-        await axios.put(
-          `import.meta.env.VITE_API_URL/donors/${editId}`,
-          formData
-        );
-
-        toast.success(
-          "Donor Updated"
-        );
-
+        await API.put(`/donors/${editId}`, formData);
+        toast.success("Donor Updated Successfully");
       } else {
-
-        await axios.post(
-          "import.meta.env.VITE_API_URL/donors",
-          formData
-        );
-
-        toast.success(
-          "Donor Added"
-        );
-
+        await API.post("/donors", formData);
+        toast.success("Donor Added Successfully");
       }
 
       setFormData({
@@ -94,101 +58,63 @@ function DonorManagement() {
       setEditId(null);
 
       fetchDonors();
-
     } catch (error) {
-
+      console.error(error);
       toast.error(
-        "Operation Failed"
+        error.response?.data?.message || "Operation Failed"
       );
-
     }
   };
 
-  const handleEdit =
-    (donor) => {
-
+  const handleEdit = (donor) => {
     setEditId(donor._id);
 
     setFormData({
       name: donor.name,
-      bloodGroup:
-        donor.bloodGroup,
+      bloodGroup: donor.bloodGroup,
       phone: donor.phone,
       email: donor.email,
     });
-
   };
 
-  const handleDelete =
-    async (id) => {
-
-    if (
-      !window.confirm(
-        "Delete donor?"
-      )
-    )
-      return;
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete donor?")) return;
 
     try {
+      await API.delete(`/donors/${id}`);
 
-      await axios.delete(
-        `import.meta.env.VITE_API_URL/donors/${id}`
-      );
-
-      toast.success(
-        "Donor Deleted"
-      );
+      toast.success("Donor Deleted Successfully");
 
       fetchDonors();
-
-    } catch {
-
+    } catch (error) {
+      console.error(error);
       toast.error(
-        "Delete Failed"
+        error.response?.data?.message || "Delete Failed"
       );
-
     }
   };
 
-  const filteredDonors =
-    donors.filter((donor) =>
-      donor.name
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
+  const filteredDonors = donors.filter((donor) =>
+    donor.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <Layout>
-
       <div className="card shadow mt-4">
-
         <div className="card-header bg-success text-white">
-          Donor Management
+          <h5 className="mb-0">Donor Management</h5>
         </div>
 
         <div className="card-body">
-
-          <form
-            onSubmit={
-              handleSubmit
-            }
-            className="row g-3"
-          >
-
+          <form onSubmit={handleSubmit} className="row g-3">
             <div className="col-md-3">
               <input
                 type="text"
                 name="name"
                 className="form-control"
                 placeholder="Name"
-                value={
-                  formData.name
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.name}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -199,12 +125,8 @@ function DonorManagement() {
                 name="bloodGroup"
                 className="form-control"
                 placeholder="Blood Group"
-                value={
-                  formData.bloodGroup
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.bloodGroup}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -215,12 +137,8 @@ function DonorManagement() {
                 name="phone"
                 className="form-control"
                 placeholder="Phone"
-                value={
-                  formData.phone
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.phone}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -231,12 +149,8 @@ function DonorManagement() {
                 name="email"
                 className="form-control"
                 placeholder="Email"
-                value={
-                  formData.email
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -246,12 +160,9 @@ function DonorManagement() {
                 type="submit"
                 className="btn btn-success w-100"
               >
-                {editId
-                  ? "Update"
-                  : "Add"}
+                {editId ? "Update" : "Add"}
               </button>
             </div>
-
           </form>
 
           <hr />
@@ -261,65 +172,47 @@ function DonorManagement() {
             className="form-control mb-3"
             placeholder="Search donor..."
             value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
+            onChange={(e) => setSearch(e.target.value)}
           />
 
           <div className="table-responsive">
-
-            <table className="table table-hover">
-
-              <thead>
+            <table className="table table-hover align-middle">
+              <thead className="table-light">
                 <tr>
                   <th>Name</th>
                   <th>Blood Group</th>
                   <th>Phone</th>
                   <th>Email</th>
-                  <th>Actions</th>
+                  <th width="160">Actions</th>
                 </tr>
               </thead>
 
               <tbody>
-
-                {filteredDonors.map(
-                  (donor) => (
-                    <tr
-                      key={
-                        donor._id
-                      }
-                    >
-                      <td>
-                        {donor.name}
-                      </td>
+                {filteredDonors.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="text-center">
+                      No Donors Found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredDonors.map((donor) => (
+                    <tr key={donor._id}>
+                      <td>{donor.name}</td>
 
                       <td>
                         <span className="badge bg-danger">
-                          {
-                            donor.bloodGroup
-                          }
+                          {donor.bloodGroup}
                         </span>
                       </td>
 
-                      <td>
-                        {donor.phone}
-                      </td>
+                      <td>{donor.phone}</td>
+
+                      <td>{donor.email}</td>
 
                       <td>
-                        {donor.email}
-                      </td>
-
-                      <td>
-
                         <button
                           className="btn btn-warning btn-sm me-2"
-                          onClick={() =>
-                            handleEdit(
-                              donor
-                            )
-                          }
+                          onClick={() => handleEdit(donor)}
                         >
                           Edit
                         </button>
@@ -327,30 +220,20 @@ function DonorManagement() {
                         <button
                           className="btn btn-danger btn-sm"
                           onClick={() =>
-                            handleDelete(
-                              donor._id
-                            )
+                            handleDelete(donor._id)
                           }
                         >
                           Delete
                         </button>
-
                       </td>
-
                     </tr>
-                  )
+                  ))
                 )}
-
               </tbody>
-
             </table>
-
           </div>
-
         </div>
-
       </div>
-
     </Layout>
   );
 }
