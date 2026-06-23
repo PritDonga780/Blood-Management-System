@@ -23,7 +23,7 @@ function BloodStock() {
       setLoading(true);
 
       const res = await axios.get(
-        "http://localhost:5000/api/blood-stock"
+        "import.meta.env.VITE_API_URL/blood-stock"
       );
 
       setStock(res.data);
@@ -59,7 +59,7 @@ function BloodStock() {
       setActionLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/blood-stock",
+        "import.meta.env.VITE_API_URL/blood-stock",
         formData
       );
 
@@ -93,7 +93,7 @@ function BloodStock() {
       setActionLoading(true);
 
       await axios.delete(
-        `http://localhost:5000/api/blood-stock/${id}`
+        `import.meta.env.VITE_API_URL/blood-stock/${id}`
       );
 
       toast.success(

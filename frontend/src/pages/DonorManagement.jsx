@@ -33,7 +33,7 @@ function DonorManagement() {
 
       const res =
         await axios.get(
-          "http://localhost:5000/api/donors"
+          "import.meta.env.VITE_API_URL/donors"
         );
 
       setDonors(res.data);
@@ -66,7 +66,7 @@ function DonorManagement() {
       if (editId) {
 
         await axios.put(
-          `http://localhost:5000/api/donors/${editId}`,
+          `import.meta.env.VITE_API_URL/donors/${editId}`,
           formData
         );
 
@@ -77,7 +77,7 @@ function DonorManagement() {
       } else {
 
         await axios.post(
-          "http://localhost:5000/api/donors",
+          "import.meta.env.VITE_API_URL/donors",
           formData
         );
 
@@ -135,7 +135,7 @@ function DonorManagement() {
     try {
 
       await axios.delete(
-        `http://localhost:5000/api/donors/${id}`
+        `import.meta.env.VITE_API_URL/donors/${id}`
       );
 
       toast.success(

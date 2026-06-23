@@ -8,7 +8,7 @@ function BloodRequests() {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/requests");
+      const res = await axios.get("import.meta.env.VITE_API_URL/requests");
 
       setRequests(res.data);
     } catch (error) {
@@ -24,7 +24,7 @@ function BloodRequests() {
 
   const updateStatus = async (id, action) => {
     try {
-      await axios.put(`http://localhost:5000/api/requests/${action}/${id}`);
+      await axios.put(`import.meta.env.VITE_API_URL/requests/${action}/${id}`);
 
       fetchRequests();
     } catch (error) {

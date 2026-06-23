@@ -24,7 +24,7 @@ function DonationCamp() {
       setLoading(true);
 
       const res = await axios.get(
-        "http://localhost:5000/api/camps"
+        "import.meta.env.VITE_API_URL/camps"
       );
 
       setCamps(res.data);
@@ -52,7 +52,7 @@ function DonationCamp() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/camps",
+        "import.meta.env.VITE_API_URL/camps",
         formData
       );
 
@@ -80,7 +80,7 @@ function DonationCamp() {
   const deleteCamp = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/camps/${id}`
+        `import.meta.env.VITE_API_URL/camps/${id}`
       );
 
       toast.success(

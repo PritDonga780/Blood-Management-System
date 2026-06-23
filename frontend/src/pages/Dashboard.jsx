@@ -21,14 +21,14 @@ function Dashboard() {
   const fetchDashboardData = async () => {
     try {
       const statsRes = await axios.get(
-        "http://localhost:5000/api/dashboard/stats"
+        "import.meta.env.VITE_API_URL/dashboard/stats"
       );
 
       setStats(statsRes.data);
 
       const notificationRes =
         await axios.get(
-          "http://localhost:5000/api/notifications"
+          "import.meta.env.VITE_API_URL/notifications"
         );
 
       setNotifications(
