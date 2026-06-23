@@ -13,9 +13,7 @@ function Notification() {
       try {
 
         const res =
-          await axios.get(
-            "import.meta.env.VITE_API_URL/notifications"
-          );
+          await API.get("/notifications");
 
         setNotifications(
           res.data

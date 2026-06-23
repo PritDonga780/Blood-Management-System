@@ -23,7 +23,7 @@ function DonationCamp() {
     try {
       setLoading(true);
 
-      const res = await axios.get(
+      const res = await (
         "import.meta.env.VITE_API_URL/camps"
       );
 

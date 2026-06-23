@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { toast } from "react-toastify";
+import API from "../api/axios";
 
 function BloodStock() {
   const [stock, setStock] = useState([]);
@@ -22,9 +23,7 @@ function BloodStock() {
 
       setLoading(true);
 
-      const res = await axios.get(
-        "import.meta.env.VITE_API_URL/blood-stock"
-      );
+      const res = await API.get("/blood-stock");
 
       setStock(res.data);
 

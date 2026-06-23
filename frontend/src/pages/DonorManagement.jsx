@@ -32,10 +32,7 @@ function DonorManagement() {
     try {
 
       const res =
-        await axios.get(
-          "import.meta.env.VITE_API_URL/donors"
-        );
-
+        await API.get("/donors");
       setDonors(res.data);
 
     } catch (error) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import API from "../api/axios";
 
 function BloodRequests() {
   const [requests, setRequests] = useState([]);
@@ -8,7 +9,7 @@ function BloodRequests() {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get("import.meta.env.VITE_API_URL/requests");
+      const res = await API.get("/requests");
 
       setRequests(res.data);
     } catch (error) {

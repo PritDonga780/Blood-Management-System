@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import "../styles/Dashboard.css";
+import API from "../api/axios";
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -20,16 +21,12 @@ function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const statsRes = await axios.get(
-        "import.meta.env.VITE_API_URL/dashboard/stats"
-      );
+      const statsRes = await API.get("/dashboard/stats");
 
       setStats(statsRes.data);
 
       const notificationRes =
-        await axios.get(
-          "import.meta.env.VITE_API_URL/notifications"
-        );
+        await API.get("/notifications");
 
       setNotifications(
         notificationRes.data

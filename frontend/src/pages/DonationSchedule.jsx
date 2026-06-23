@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import API from "../api/axios";
 
 function DonationSchedule() {
   const [camps, setCamps] = useState([]);
@@ -8,9 +9,7 @@ function DonationSchedule() {
 
   const fetchCamps = async () => {
     try {
-      const res = await axios.get(
-        "import.meta.env.VITE_API_URL/camps"
-      );
+      const res = await API.get("/camps");
 
       setCamps(res.data);
     } catch (error) {
