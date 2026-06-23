@@ -19,26 +19,21 @@ const app = express();
 
 // DATABASE CONNECTION
 
+
+
+
+
 connectDB();
 
 // MIDDLEWARE
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://blood-management-system-silk.vercel.app",
-];
+const cors = require("cors");
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true,
     credentials: true,
-  }),
+  })
 );
 app.use(express.json());
 app.use("/api/dashboard", dashboardRoutes);
