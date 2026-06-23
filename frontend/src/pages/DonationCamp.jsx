@@ -1,35 +1,31 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Layout from "../components/Layout";
 import { toast } from "react-toastify";
+import API from "../api/axios";
 
 function DonationCamp() {
   const [camps, setCamps] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [formData, setFormData] =
-    useState({
-      campName: "",
-      address: "",
-      date: "",
-      time: "",
-      organizer: "",
-      contact: "",
-    });
+  const [formData, setFormData] = useState({
+    campName: "",
+    address: "",
+    date: "",
+    time: "",
+    organizer: "",
+    contact: "",
+  });
 
   const fetchCamps = async () => {
     try {
       setLoading(true);
 
-      const res = await (
-        "import.meta.env.VITE_API_URL/camps"
-      );
+      const res = await API.get("/camps");
 
       setCamps(res.data);
     } catch (error) {
       console.log(error);
+      toast.error("Failed to load camps");
     } finally {
       setLoading(false);
     }
@@ -42,8 +38,7 @@ function DonationCamp() {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]:
-        e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -51,14 +46,9 @@ function DonationCamp() {
     e.preventDefault();
 
     try {
-      await axios.post(
-        "import.meta.env.VITE_API_URL/camps",
-        formData
-      );
+      await API.post("/camps", formData);
 
-      toast.success(
-        "Camp Added Successfully"
-      );
+      toast.success("Camp Added Successfully");
 
       setFormData({
         campName: "",
@@ -71,43 +61,33 @@ function DonationCamp() {
 
       fetchCamps();
     } catch (error) {
-      toast.error(
-        "Failed to Add Camp"
-      );
+      console.log(error);
+      toast.error("Failed to Add Camp");
     }
   };
 
   const deleteCamp = async (id) => {
     try {
-      await axios.delete(
-        `import.meta.env.VITE_API_URL/camps/${id}`
-      );
+      await API.delete(`/camps/${id}`);
 
-      toast.success(
-        "Camp Deleted"
-      );
+      toast.success("Camp Deleted");
 
       fetchCamps();
     } catch (error) {
-      toast.error(
-        "Delete Failed"
-      );
+      console.log(error);
+      toast.error("Delete Failed");
     }
   };
 
   return (
     <Layout>
-
       <div className="card shadow mt-4">
-
         <div className="card-header bg-danger text-white">
           Donation Camp Schedule
         </div>
 
         <div className="card-body">
-
           <form onSubmit={handleSubmit}>
-
             <input
               className="form-control mb-3"
               placeholder="Camp Name"
@@ -160,31 +140,27 @@ function DonationCamp() {
               onChange={handleChange}
             />
 
-            <button className="btn btn-danger">
+            <button type="submit" className="btn btn-danger">
               Add Camp
             </button>
-
           </form>
-
         </div>
-
       </div>
 
       <div className="card shadow mt-4">
-
         <div className="card-header bg-primary text-white">
           Upcoming Donation Camps
         </div>
 
         <div className="card-body">
-
           {loading ? (
-            <div className="text-center">
-              Loading...
+            <div className="text-center">Loading...</div>
+          ) : camps.length === 0 ? (
+            <div className="alert alert-info">
+              No Donation Camps Found
             </div>
           ) : (
             <table className="table table-hover">
-
               <thead>
                 <tr>
                   <th>Camp</th>
@@ -196,55 +172,33 @@ function DonationCamp() {
               </thead>
 
               <tbody>
-
                 {camps.map((camp) => (
                   <tr key={camp._id}>
+                    <td>{camp.campName}</td>
+
+                    <td>{camp.address}</td>
 
                     <td>
-                      {camp.campName}
+                      {new Date(camp.date).toLocaleDateString()}
                     </td>
 
-                    <td>
-                      {camp.address}
-                    </td>
+                    <td>{camp.time}</td>
 
                     <td>
-                      {new Date(
-                        camp.date
-                      ).toLocaleDateString()}
-                    </td>
-
-                    <td>
-                      {camp.time}
-                    </td>
-
-                    <td>
-
                       <button
                         className="btn btn-sm btn-danger"
-                        onClick={() =>
-                          deleteCamp(
-                            camp._id
-                          )
-                        }
+                        onClick={() => deleteCamp(camp._id)}
                       >
                         Delete
                       </button>
-
                     </td>
-
                   </tr>
                 ))}
-
               </tbody>
-
             </table>
           )}
-
         </div>
-
       </div>
-
     </Layout>
   );
 }

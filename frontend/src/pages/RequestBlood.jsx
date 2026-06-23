@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
 import Layout from "../components/Layout";
 import { toast } from "react-toastify";
+import API from "../api/axios";
 
 function RequestBlood() {
   const [formData, setFormData] = useState({
@@ -13,9 +13,6 @@ function RequestBlood() {
   });
 
   const handleChange = (e) => {
-    e.preventDefault();
-
-    console.log("Submit clicked");
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -26,25 +23,32 @@ function RequestBlood() {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "import.meta.env.VITE_API_URL/requests",
-        formData,
-      );
+      const res = await API.post("/requests", formData);
 
       console.log(res.data);
 
-      toast.success("Request Submitted");
+      toast.success("Request Submitted Successfully");
+
+      setFormData({
+        patientName: "",
+        bloodGroup: "",
+        units: "",
+        hospital: "",
+        reason: "",
+      });
     } catch (error) {
       console.error(error);
 
-      toast.error("Failed to submit request");
+      toast.error(error.response?.data?.message || "Failed to submit request");
     }
   };
 
   return (
     <Layout>
       <div className="card shadow mt-4">
-        <div className="card-header bg-danger text-white">Request Blood</div>
+        <div className="card-header bg-danger text-white">
+          <h5 className="mb-0">Request Blood</h5>
+        </div>
 
         <div className="card-body">
           <form onSubmit={handleSubmit}>
@@ -52,15 +56,19 @@ function RequestBlood() {
               className="form-control mb-3"
               placeholder="Patient Name"
               name="patientName"
+              value={formData.patientName}
               onChange={handleChange}
+              required
             />
 
             <select
               className="form-control mb-3"
               name="bloodGroup"
+              value={formData.bloodGroup}
               onChange={handleChange}
+              required
             >
-              <option>Select Blood Group</option>
+              <option value="">Select Blood Group</option>
 
               <option>A+</option>
               <option>A-</option>
@@ -73,17 +81,22 @@ function RequestBlood() {
             </select>
 
             <input
+              type="number"
               className="form-control mb-3"
               placeholder="Units Required"
               name="units"
+              value={formData.units}
               onChange={handleChange}
+              required
             />
 
             <input
               className="form-control mb-3"
               placeholder="Hospital Name"
               name="hospital"
+              value={formData.hospital}
               onChange={handleChange}
+              required
             />
 
             <textarea
@@ -91,7 +104,9 @@ function RequestBlood() {
               rows="4"
               placeholder="Reason"
               name="reason"
+              value={formData.reason}
               onChange={handleChange}
+              required
             />
 
             <button type="submit" className="btn btn-danger">
