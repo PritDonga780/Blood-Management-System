@@ -1,13 +1,11 @@
 require("dotenv").config();
 
 const express = require("express");
-
 const cors = require("cors");
 
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
-
 const donorRoutes = require("./routes/donorRoutes");
 const bloodStockRoutes = require("./routes/bloodStockRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
@@ -17,44 +15,26 @@ const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
-// DATABASE CONNECTION
-
-
-
-
-
 connectDB();
 
-// MIDDLEWARE
+// Middleware
+app.use(cors());
 
-const cors = require("cors");
-
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
 app.use(express.json());
+
+// Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-
 app.use("/api/blood-stock", bloodStockRoutes);
-
 app.use("/api/requests", bloodRequestRoutes);
 app.use("/api/donors", donorRoutes);
 app.use("/api/camps", campRoutes);
 app.use("/api/notifications", notificationRoutes);
-// ROUTES
 
-app.use("/api/auth", authRoutes);
-
-// TEST ROUTE
-
+// Test Route
 app.get("/", (req, res) => {
   res.send("Blood Bank Backend Running");
 });
-
-// SERVER
 
 const PORT = process.env.PORT || 5000;
 
