@@ -1,11 +1,20 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/auth",
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "https://blood-management-system-api.onrender.com/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-export const registerUser = (data) =>
-  API.post("/register", data);
+export const registerUser = (data) => {
+  return API.post("/auth/register", data);
+};
 
-export const loginUser = (data) =>
-  API.post("/login", data);
+export const loginUser = (data) => {
+  return API.post("/auth/login", data);
+};
+
+export default API;
